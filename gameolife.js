@@ -3,7 +3,7 @@
 // Settings
 const densit = 0.85;
 const gridSize = 4; //Pixels (x and y, equal) per cell (square)
-const imgFileName = "bugs.png";
+const imgFileName = "./images/bugs.png";
 var updateRate = 15; //Maximun updates per second
 // Arrays and Dictionaries
 const powers = {};
@@ -24,8 +24,8 @@ window.onload = function () {
     ctx = canvas.getContext("2d");
     ctx.canvas.width = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
-    addEvents();
     init();
+    addEvents();
     animate();
 };
 
@@ -45,7 +45,7 @@ function animate(ts) {
     if (ts - lastupdate > 1000 / updateRate) {
         lastupdate = ts;
         interact(elem, powers, rules);
-        draw(ctx, elem, colors);
+        draw(ctx, elem, sprMap);
     }
     requestAnimationFrame(animate);
 }
@@ -383,10 +383,10 @@ function setColors2(colors) {
 }
 */
 
-function setSpriteMap(sprites, imgFile, imgCellWidth, imgCellHeigh, spriteWidth, spriteHeight) {
+function setSpriteMap(sprites, bugsImg, imgCellWidth, imgCellHeigh, spriteWidth, spriteHeight) {
     for (let i = 0; i < 11; i++) {
         sprites[i] = {
-            image: imgFile,
+            image: bugsImg,
             sx: 0,
             sy: i * imgCellHeigh,
             sWidth: imgCellWidth,
@@ -405,6 +405,16 @@ function draw(context, matrix, bugsMap) {
 
     if ("image" in bugsMap[0]) {
         // If images are to be used
+        ctx.clearRect(0, 0, cols * gridSize, rows * gridSize);
+        for (let r = 0; r < rows; r += 1) {
+            for (let c = 0; c < cols; c += 1) {
+                if (matrix[r][c] != -1) {
+                    let m = bugsMap[matrix[r][c]];
+                    context.drawImage(m["image"], m["sx"], m["sy"], m["sWidth"], m["sHeight"],
+                        m["dx"] + c * gridSize, m["dy"] + r * gridSize, m["dWidth"], m["dHeight"]);
+                }
+            }
+        }
     } else {
         // If a color map is to be used
         let pixelsData = new Uint8ClampedArray(cols * rows * 4);
