@@ -4,7 +4,7 @@
 const densit = 0.3333;
 const gridSize = 4; //Pixels (x and y, equal) per cell (square)
 const imgFileName = "./images/bugs.png";
-var updateRate = 8; //Maximun updates per second
+var updateRate = 26; //Maximun updates per second
 // Arrays and Dictionaries
 const powers = {};
 const rules = {};
