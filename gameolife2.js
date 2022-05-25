@@ -2,7 +2,7 @@
 // Global variables
 // Settings
 const densit = 0.3333;
-const gridSize = 1; //Pixels (x and y, equal) per cell (square)
+const gridSize = 4; //Pixels (x and y, equal) per cell (square)
 const imgFileName = "./images/bugs.png";
 var updateRate = 8; //Maximun updates per second
 // Arrays and Dictionaries
