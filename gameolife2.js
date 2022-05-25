@@ -22,8 +22,9 @@ var lastupdate = 0.0;
 window.onload = function () {
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
-    ctx.canvas.width = window.innerWidth;
-    ctx.canvas.height = window.innerHeight;
+    ctx.canvas.width = (window.innerWidth - 20);
+    ctx.canvas.height = window.innerHeight - 20;
+
     init();
     addEvents();
     animate();
@@ -35,8 +36,8 @@ function init() {
     setRules(rules);
     bugsImg.src = imgFileName;
     setSpriteMap(sprMap, bugsImg, 4, 4, gridSize, gridSize);
-    cols = Math.floor(window.innerWidth / gridSize);
-    rows = Math.floor(window.innerHeight / gridSize);
+    cols = Math.floor((window.innerWidth - 20) / gridSize);
+    rows = Math.floor((window.innerHeight - 20) / gridSize);
     elem = Array.matrix(cols, rows, -1);
     fillMatrix(elem, powers, densit);
 }
@@ -105,13 +106,13 @@ function addEvents() {
 }
 
 function resizeAll() {
-    ctx.canvas.width = window.innerWidth;
-    ctx.canvas.height = window.innerHeight;
+    ctx.canvas.width = (window.innerWidth - 20);
+    ctx.canvas.height = (window.innerHeight - 20);
     // Todo: implement - resize the matrix, variables, etc
     let prev_rows = elem.length;
     let prev_cols = elem[0].length;
-    cols = Math.floor(window.innerWidth / gridSize);
-    rows = Math.floor(window.innerHeight / gridSize);
+    cols = Math.floor((window.innerWidth - 20) / gridSize);
+    rows = Math.floor(window.innerHeight - 20 / gridSize);
     elem = Array.resize(elem, cols, rows, -1);
 
 }
@@ -123,15 +124,11 @@ function fillMatrix(matrix, powers, density) {
     var counter = {}
     for (var r = 0; r < rows; r += 1) {
         for (var c = 0; c < cols; c += 1) {
-            if (c == 0 || c == cols - 1 || r == 0 || r == rows - 1) {
-                matrix[r][c] = -1;
-            } else {
-                if (Math.random() < density) {
-                    var randChoice = Math.floor(Math.random() * powerkeys.length);
-                    counter[randChoice] = counter[randChoice] ? (counter[randChoice] + 1) : 1;
-                    matrix[r][c] = powerkeys[randChoice];
-                } else matrix[r][c] = -1;
-            }
+            if (Math.random() < density) {
+                var randChoice = Math.floor(Math.random() * powerkeys.length);
+                counter[randChoice] = counter[randChoice] ? (counter[randChoice] + 1) : 1;
+                matrix[r][c] = powerkeys[randChoice];
+            } else matrix[r][c] = -1;
         }
     }
 }
@@ -144,18 +141,20 @@ function interact(matrix, powers, rules) {
     for (var r = 0; r < rows; r += 1) {
         for (var c = 0; c < cols; c += 1) {
             var v = -1;
-            if (!(c == 0 || c == cols - 1 || r == 0 || r == rows - 1)) {
-                cell[0][0] = matCopy[r - 1][c - 1];
-                cell[0][1] = matCopy[r][c - 1];
-                cell[0][2] = matCopy[r + 1][c - 1];
-                cell[1][0] = matCopy[r - 1][c];
-                cell[1][1] = matCopy[r][c];
-                cell[1][2] = matCopy[r + 1][c];
-                cell[2][0] = matCopy[r - 1][c + 1];
-                cell[2][1] = matCopy[r][c + 1];
-                cell[2][2] = matCopy[r + 1][c + 1];
-                v = judge(cell, powers, rules);
-            }
+            var c_1 = (c <= 0) ? (cols - 1) : (c - 1);
+            var cp1 = (c >= (cols - 1)) ? 0 : (c + 1);
+            var r_1 = (r <= 0) ? (rows - 1) : (r - 1);
+            var rp1 = (r >= (rows - 1)) ? 0 : (r + 1);
+            cell[0][0] = matCopy[r_1][c_1];
+            cell[0][1] = matCopy[r][c_1];
+            cell[0][2] = matCopy[rp1][c_1];
+            cell[1][0] = matCopy[r_1][c];
+            cell[1][1] = matCopy[r][c];
+            cell[1][2] = matCopy[rp1][c];
+            cell[2][0] = matCopy[r_1][cp1];
+            cell[2][1] = matCopy[r][cp1];
+            cell[2][2] = matCopy[rp1][cp1];
+            v = judge(cell, powers, rules);
             matrix[r][c] = v;
         }
     }
