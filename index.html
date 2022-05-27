@@ -7,10 +7,50 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <script src="gameolife2.js"></script>
     <title>Game of Life x 11</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
-    <canvas id="canvas"> </canvas>
-</body>
+<section>
+    <section>
+        <config id="config">
+            <p>
+                <button id="pause">Pause</button>
+                <button id="restart">Restart</button>
+            </p>
+            <h1>
+                Speed:
+                <input type="range" id="speed" min="1" max="60" step="5" value="15"><br>
+                Grid Size:<br>
+                <input type="range" id="gridsz" min="1" max="16">
+            </h1>
+
+            <h2> Stay Alive</h2>
+            <p> <label>Same Min:</label></label><input type="range" id="aliveSMin" min="1" max="8">
+                <label>Same Max:</label></label><input type="range" id="aliveSMax" min="1" max="8">
+            </p>
+            And:<input type="radio" id="and" name="aliveRule" value="and">
+            Or:<input type="radio" id="or" name="aliveRule" value="or">
+            <p>
+                <label>Points Min:</label></label><input type="range" id="alivePMin" min="-8" max="8">
+                <label>Points Max:</label></label><input type="range" id="alivePMax" min="-8" max="8">
+            </p></br>
+            <h2> Born</h2>
+            <p> <label>Same Min:</label></label><input type="range" id="bornSMin" min="1" max="8">
+                <label>Same Max:</label></label><input type="range" id="bornSMax" min="1" max="8">
+            </p>
+            And:<input type="radio" id="and" name="bornRule" value="and">
+            Or:<input type="radio" id="or" name="bornRule" value="or">
+            <p>
+                <label>Points Min:</label></label><input type="range" id="bornPMin" min="-8" max="8">
+                <label>Points Max:</label></label><input type="range" id="bornPMax" min="-8" max="8">
+            </p>
+
+
+        </config>
+        <draw>
+            <canvas id="canvas"> </canvas>
+        </draw>
+    </section>
+    </body>
 
 </html>

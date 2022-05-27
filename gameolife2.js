@@ -2,9 +2,7 @@
 // Global variables
 // Settings
 const densit = 0.3333;
-const gridSize = 4; //Pixels (x and y, equal) per cell (square)
 const imgFileName = "./images/bugs.png";
-var updateRate = 26; //Maximun updates per second
 // Arrays and Dictionaries
 const powers = {};
 const rules = {};
@@ -17,14 +15,35 @@ var clickOn = false;
 // Information holders
 const bugsImg = new Image();
 var rows, cols;
-var canvas, ctx;
 var lastupdate = 0.0;
+var canvas, ctx;
+var updateRate = 26, gridSize = 4;
+var config;
+var pause, restart;
+var speed, gridsz;
+var lpad;
+var aliveSMin, aliveSMax, alivePMin, alivePMax, aliveRule;
+var bornSMin, bornSMax, bornPMin, bornPMax, bornRule;
+
 window.onload = function () {
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
-    ctx.canvas.width = (window.innerWidth - 20);
+    config = document.getElementById("config");
+    lpad = config.clientWidth;
+    ctx.canvas.width = (window.innerWidth - lpad);
     ctx.canvas.height = window.innerHeight - 20;
-
+    pause = document.getElementById("pause");
+    restart = document.getElementById("restart");
+    speed = document.getElementById("speed");
+    gridsz = document.getElementById("gridsz");
+    aliveSMin = document.getElementById("aliveSMin");
+    aliveSMax = document.getElementById("aliveSMax");
+    alivePMin = document.getElementById("alivePMin");
+    alivePMax = document.getElementById("alivePMax");
+    bornSMin = document.getElementById("bornSMin");
+    bornSMax = document.getElementById("bornSMax");
+    bornPMin = document.getElementById("bornPMin");
+    bornPMax = document.getElementById("bornPMax");
     init();
     addEvents();
     animate();
@@ -36,10 +55,25 @@ function init() {
     setRules(rules);
     bugsImg.src = imgFileName;
     setSpriteMap(sprMap, bugsImg, 4, 4, gridSize, gridSize);
-    cols = Math.floor((window.innerWidth - 20) / gridSize);
+    cols = Math.floor((window.innerWidth - lpad) / gridSize);
     rows = Math.floor((window.innerHeight - 20) / gridSize);
     elem = Array.matrix(cols, rows, -1);
     fillMatrix(elem, powers, densit);
+}
+
+function addEvents() {
+    window.addEventListener("mousemove", (event) => {
+        mouse.x = event.x;
+        mouse.y = event.y;
+    });
+    window.addEventListener("click", () => {
+        clickOn = !clickOn;
+    });
+    window.addEventListener("resize", resizeAll);
+    speed.onchange = function (e) { updateRate = speed.value; }
+    gridsz.onchange = function (e) { gridSize = gridsz.value; resizeAll(); }
+
+
 }
 
 function animate(ts) {
@@ -94,19 +128,10 @@ Array.resize = function (origin_arr, to_cols, to_rows, initial) {
     return arr;
 };
 
-function addEvents() {
-    window.addEventListener("mousemove", (event) => {
-        mouse.x = event.x;
-        mouse.y = event.y;
-    });
-    window.addEventListener("click", () => {
-        clickOn = !clickOn;
-    });
-    window.addEventListener("resize", resizeAll);
-}
+
 
 function resizeAll() {
-    ctx.canvas.width = (window.innerWidth - 20);
+    ctx.canvas.width = (canvas.innerWidth - lpad);
     ctx.canvas.height = (window.innerHeight - 20);
     // Todo: implement - resize the matrix, variables, etc
     let prev_rows = elem.length;
@@ -114,6 +139,7 @@ function resizeAll() {
     cols = Math.floor((window.innerWidth - 20) / gridSize);
     rows = Math.floor(window.innerHeight - 20 / gridSize);
     elem = Array.resize(elem, cols, rows, -1);
+    setSpriteMap(sprMap, bugsImg, 4, 4, gridSize, gridSize);
 
 }
 
