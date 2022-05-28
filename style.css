@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    line-height: 1em;
 }
 
 section {
@@ -18,9 +19,9 @@ config {
 }
 
 draw {
-    -webkit-flex: 2;
-    -ms-flex: 2;
-    flex: 2;
+    -webkit-flex: 3;
+    -ms-flex: 3;
+    flex: 3;
     background-color: #ffffff;
     padding: 5px;
 }

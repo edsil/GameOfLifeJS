@@ -11,45 +11,49 @@
 </head>
 
 <section>
-    <section>
-        <config id="config">
-            <p>
-                <button id="pause">Pause</button>
-                <button id="restart">Restart</button>
-            </p>
-            <h1>
-                Speed:
-                <input type="range" id="speed" min="1" max="60" step="5" value="15"><br>
-                Grid Size:<br>
-                <input type="range" id="gridsz" min="1" max="16">
-            </h1>
-
-            <h2> Stay Alive</h2>
-            <p> <label>Same Min:</label></label><input type="range" id="aliveSMin" min="1" max="8">
-                <label>Same Max:</label></label><input type="range" id="aliveSMax" min="1" max="8">
-            </p>
-            And:<input type="radio" id="and" name="aliveRule" value="and">
-            Or:<input type="radio" id="or" name="aliveRule" value="or">
-            <p>
-                <label>Points Min:</label></label><input type="range" id="alivePMin" min="-8" max="8">
-                <label>Points Max:</label></label><input type="range" id="alivePMax" min="-8" max="8">
-            </p></br>
-            <h2> Born</h2>
-            <p> <label>Same Min:</label></label><input type="range" id="bornSMin" min="1" max="8">
-                <label>Same Max:</label></label><input type="range" id="bornSMax" min="1" max="8">
-            </p>
-            And:<input type="radio" id="and" name="bornRule" value="and">
-            Or:<input type="radio" id="or" name="bornRule" value="or">
-            <p>
-                <label>Points Min:</label></label><input type="range" id="bornPMin" min="-8" max="8">
-                <label>Points Max:</label></label><input type="range" id="bornPMax" min="-8" max="8">
-            </p>
-
-
-        </config>
-        <draw>
-            <canvas id="canvas"> </canvas>
-        </draw>
+    <config id="config">
+        <p>
+            <button id="pause">Pause</button>
+            <button id="restart">Restart</button>
+        </p>
+        
+        Speed: <label id="lspeed">26</label><br>
+        <input type="range" id="speed" min="1" max="60" step="5" value="26"><br>
+        Grid Size: <label id="lgridsz">8</label><br>
+        <input type="range" id="gridsz" min="1" max="64" value="8"><br>
+        
+        <h1> Stay Alive</h1>
+        Same Min: <label id="laliveSMin">3</label><br>
+        <input type="range" id="aliveSMin" min="1" max="8" value="3"><br>
+        Same Max: <label id="laliveSMax">4</label><br>
+        <input type="range" id="aliveSMax" min="1" max="8" value="4"><br>
+        
+        <p>And:<input type="radio" id="and" name="aliveRule" value="and" checked>
+        Or:<input type="radio" id="or" name="aliveRule" value="or"></p>
+        
+        Points Min: <label id="lalivePMin">-3</label><br>
+        <input type="range" id="alivePMin" min="-8" max="8" value="-3"><br>
+        Points Max: <label id="lalivePMax">10</label><br>
+        <input type="range" id="alivePMax" min="-8" max="8" value="10">
+        
+        <h1> Born</h1>
+        Same Min: <label id="lbornSMin">4</label><br>
+        <input type="range" id="bornSMin" min="1" max="8" value="4">
+        Same Max: <label id="lbornSMax">4</label><br>
+        <input type="range" id="bornSMax" min="1" max="8" value="4">
+        
+        <p> And:<input type="radio" id="and" name="bornRule" value="and">
+        Or:<input type="radio" id="or" name="bornRule" value="or" checked></p>
+        
+        Points Min: <label id="lbornPMin">3</label><br>
+        <input type="range" id="bornPMin" min="-8" max="8" value="3">
+        Points Max: <label id="lbornPMax">10</label><br>
+        <input type="range" id="bornPMax" min="-8" max="8" value="10">
+        
+    </config>
+    <draw>
+        <canvas id="canvas"> </canvas>
+    </draw>
     </section>
     </body>
 

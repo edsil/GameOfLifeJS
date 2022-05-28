@@ -2,7 +2,8 @@
 // Global variables
 // Settings
 const densit = 0.3333;
-const imgFileName = "./images/bugs.png";
+const imgFileName = "./images/bugs16.png";
+const bugsize = 16;
 // Arrays and Dictionaries
 const powers = {};
 const rules = {};
@@ -17,20 +18,24 @@ const bugsImg = new Image();
 var rows, cols;
 var lastupdate = 0.0;
 var canvas, ctx;
-var updateRate = 26, gridSize = 4;
+var updateRate = 26,
+    gridSize = 8;
+var lpad;
 var config;
 var pause, restart;
 var speed, gridsz;
-var lpad;
 var aliveSMin, aliveSMax, alivePMin, alivePMax, aliveRule;
 var bornSMin, bornSMax, bornPMin, bornPMax, bornRule;
+var lspeed, lgridsz;
+var laliveSMin, laliveSMax, lalivePMin, lalivePMax, laliveRule;
+var lbornSMin, lbornSMax, lbornPMin, lbornPMax, lbornRule;
 
 window.onload = function () {
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
     config = document.getElementById("config");
-    lpad = config.clientWidth;
-    ctx.canvas.width = (window.innerWidth - lpad);
+    lpad = 200; //config.clientWidth;
+    ctx.canvas.width = window.innerWidth - lpad;
     ctx.canvas.height = window.innerHeight - 20;
     pause = document.getElementById("pause");
     restart = document.getElementById("restart");
@@ -44,6 +49,16 @@ window.onload = function () {
     bornSMax = document.getElementById("bornSMax");
     bornPMin = document.getElementById("bornPMin");
     bornPMax = document.getElementById("bornPMax");
+    lspeed = document.getElementById("lspeed");
+    lgridsz = document.getElementById("lgridsz");
+    laliveSMin = document.getElementById("laliveSMin");
+    laliveSMax = document.getElementById("laliveSMax");
+    lalivePMin = document.getElementById("lalivePMin");
+    lalivePMax = document.getElementById("lalivePMax");
+    lbornSMin = document.getElementById("lbornSMin");
+    lbornSMax = document.getElementById("lbornSMax");
+    lbornPMin = document.getElementById("lbornPMin");
+    lbornPMax = document.getElementById("lbornPMax");
     init();
     addEvents();
     animate();
@@ -54,10 +69,7 @@ function init() {
     setColors(colors);
     setRules(rules);
     bugsImg.src = imgFileName;
-    setSpriteMap(sprMap, bugsImg, 4, 4, gridSize, gridSize);
-    cols = Math.floor((window.innerWidth - lpad) / gridSize);
-    rows = Math.floor((window.innerHeight - 20) / gridSize);
-    elem = Array.matrix(cols, rows, -1);
+    resizeAll();
     fillMatrix(elem, powers, densit);
 }
 
@@ -70,10 +82,91 @@ function addEvents() {
         clickOn = !clickOn;
     });
     window.addEventListener("resize", resizeAll);
-    speed.onchange = function (e) { updateRate = speed.value; }
-    gridsz.onchange = function (e) { gridSize = gridsz.value; resizeAll(); }
-
-
+    speed.onchange = function () {
+        updateRate = speed.value;
+        lspeed.innerHTML = speed.value;
+    };
+    pause.onclick = function () {
+        if (updateRate == 0) {
+            updateRate = speed.value;
+            pause.innerHTML = "Pause";
+        } else {
+            updateRate = 0;
+            pause.innerHTML = "Continue";
+        }
+    };
+    restart.onclick = function () {
+        fillMatrix(elem, powers, densit);
+    };
+    gridsz.onchange = function () {
+        gridSize = gridsz.value;
+        lgridsz.innerHTML = gridsz.value;
+        resizeAll();
+    };
+    aliveSMin.onchange = function () {
+        rules["l"]["mns"] = aliveSMin.value;
+        if (aliveSMax.value < aliveSMin.value) {
+            aliveSMax.value = aliveSMin.value;
+            aliveSMax.onchange();
+        }
+        laliveSMin.innerHTML = aliveSMin.value;
+    };
+    aliveSMax.onchange = function () {
+        rules["l"]["mxs"] = aliveSMax.value;
+        if (aliveSMax.value < aliveSMin.value) {
+            aliveSMin.value = aliveSMax.value;
+            aliveSMin.onchange();
+        }
+        laliveSMax.innerHTML = aliveSMax.value;
+    };
+    alivePMin.onchange = function () {
+        rules["l"]["mnp"] = alivePMin.value;
+        if (alivePMax.value < alivePMin.value) {
+            alivePMax.value = alivePMin.value;
+            alivePMax.onchange();
+        }
+        lalivePMin.innerHTML = alivePMin.value;
+    };
+    alivePMax.onchange = function () {
+        rules["l"]["mxp"] = alivePMin.value;
+        if (alivePMax.value < alivePMin.value) {
+            alivePMin.value = alivePMax.value;
+            alivePMin.onchange();
+        }
+        lalivePMax.innerHTML = alivePMin.value;
+    };
+    bornSMin.onchange = function () {
+        rules["b"]["mns"] = bornSMin.value;
+        if (bornSMax.value < bornSMin.value) {
+            bornSMax.value = bornSMin.value;
+            bornSMax.onchange();
+        }
+        lbornSMin.innerHTML = bornSMin.value;
+    };
+    bornSMax.onchange = function () {
+        rules["b"]["mxs"] = bornSMax.value;
+        if (bornSMax.value < bornSMin.value) {
+            bornSMin.value = bornSMax.value;
+            bornSMin.onchange();
+        }
+        lbornSMax.innerHTML = bornSMax.value;
+    };
+    bornPMin.onchange = function () {
+        rules["b"]["mnp"] = bornPMin.value;
+        if (bornPMax.value < bornPMin.value) {
+            bornPMax.value = bornPMin.value;
+            bornPMax.onchange();
+        }
+        lbornPMax.innerHTML = bornPMax.value;
+    };
+    bornPMax.onchange = function () {
+        rules["b"]["mxsp"] = bornPMax.value;
+        if (bornPMax.value < bornPMin.value) {
+            bornPMin.value = bornPMax.value;
+            bornPMin.onchange();
+        }
+        lbornPMin.innerHTML = bornPMin.value;
+    };
 }
 
 function animate(ts) {
@@ -116,8 +209,7 @@ Array.resize = function (origin_arr, to_cols, to_rows, initial) {
             for (var c = 0; c < to_cols; ++c) {
                 arr[r][c] = origin_arr[r][c] ? origin_arr[r][c] : initial;
             }
-        }
-        else {
+        } else {
             var new_row = [];
             for (var c = 0; c < to_cols; c++) {
                 new_row[c] = initial;
@@ -128,31 +220,29 @@ Array.resize = function (origin_arr, to_cols, to_rows, initial) {
     return arr;
 };
 
-
-
 function resizeAll() {
-    ctx.canvas.width = (canvas.innerWidth - lpad);
-    ctx.canvas.height = (window.innerHeight - 20);
-    // Todo: implement - resize the matrix, variables, etc
-    let prev_rows = elem.length;
-    let prev_cols = elem[0].length;
-    cols = Math.floor((window.innerWidth - 20) / gridSize);
-    rows = Math.floor(window.innerHeight - 20 / gridSize);
-    elem = Array.resize(elem, cols, rows, -1);
-    setSpriteMap(sprMap, bugsImg, 4, 4, gridSize, gridSize);
-
+    cols = Math.floor((window.innerWidth - lpad) / gridSize);
+    rows = Math.floor(window.innerHeight / gridSize);
+    ctx.canvas.width = cols * gridSize;
+    ctx.canvas.height = rows * gridSize;
+    if (elem == undefined) {
+        elem = Array.matrix(cols, rows, -1);
+    } else {
+        elem = Array.resize(elem, cols, rows, -1);
+    }
+    setSpriteMap(sprMap, bugsImg, bugsize, bugsize, gridSize, gridSize);
 }
 
 function fillMatrix(matrix, powers, density) {
     var rows = matrix.length;
     var cols = matrix[0].length;
     var powerkeys = Object.keys(powers);
-    var counter = {}
+    var counter = {};
     for (var r = 0; r < rows; r += 1) {
         for (var c = 0; c < cols; c += 1) {
             if (Math.random() < density) {
                 var randChoice = Math.floor(Math.random() * powerkeys.length);
-                counter[randChoice] = counter[randChoice] ? (counter[randChoice] + 1) : 1;
+                counter[randChoice] = counter[randChoice] ? counter[randChoice] + 1 : 1;
                 matrix[r][c] = powerkeys[randChoice];
             } else matrix[r][c] = -1;
         }
@@ -167,10 +257,10 @@ function interact(matrix, powers, rules) {
     for (var r = 0; r < rows; r += 1) {
         for (var c = 0; c < cols; c += 1) {
             var v = -1;
-            var c_1 = (c <= 0) ? (cols - 1) : (c - 1);
-            var cp1 = (c >= (cols - 1)) ? 0 : (c + 1);
-            var r_1 = (r <= 0) ? (rows - 1) : (r - 1);
-            var rp1 = (r >= (rows - 1)) ? 0 : (r + 1);
+            var c_1 = c <= 0 ? cols - 1 : c - 1;
+            var cp1 = c >= cols - 1 ? 0 : c + 1;
+            var r_1 = r <= 0 ? rows - 1 : r - 1;
+            var rp1 = r >= rows - 1 ? 0 : r + 1;
             cell[0][0] = matCopy[r_1][c_1];
             cell[0][1] = matCopy[r][c_1];
             cell[0][2] = matCopy[rp1][c_1];
@@ -242,8 +332,7 @@ function judge(cell, powers, rules) {
                         winners.length = 0;
                         winners.push(bug);
                         maxPoints = points;
-                    }
-                    else if (points == maxPoints) {
+                    } else if (points == maxPoints) {
                         winners.push(bug);
                     }
                 }
@@ -254,8 +343,7 @@ function judge(cell, powers, rules) {
                             winners.length = 0;
                             winners.push(bug);
                             maxPoints = points;
-                        }
-                        else if (points == maxPoints) {
+                        } else if (points == maxPoints) {
                             winners.push(bug);
                         }
                     }
@@ -288,7 +376,7 @@ function judge(cell, powers, rules) {
     if (winners.length == 0) return -1;
     if (winners.length == 1) return winners[0];
     if (winners.length == 2) {
-        if (winners[0] in powers[winners[1]]["s"]) return winners[0]
+        if (winners[0] in powers[winners[1]]["s"]) return winners[0];
         else return winners[1];
     }
     var maxSame = 0;
@@ -435,8 +523,17 @@ function draw(context, matrix, bugsMap) {
             for (let c = 0; c < cols; c += 1) {
                 if (matrix[r][c] != -1) {
                     let m = bugsMap[matrix[r][c]];
-                    context.drawImage(m["image"], m["sx"], m["sy"], m["sWidth"], m["sHeight"],
-                        m["dx"] + c * gridSize, m["dy"] + r * gridSize, m["dWidth"], m["dHeight"]);
+                    context.drawImage(
+                        m["image"],
+                        m["sx"],
+                        m["sy"],
+                        m["sWidth"],
+                        m["sHeight"],
+                        m["dx"] + c * gridSize,
+                        m["dy"] + r * gridSize,
+                        m["dWidth"],
+                        m["dHeight"]
+                    );
                 }
             }
         }
