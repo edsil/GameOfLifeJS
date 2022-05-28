@@ -23,7 +23,7 @@ var updateRate = 26,
 var lpad;
 var config;
 var pause, restart;
-var speed, gridsz;
+var speed, gridsz, addrnd;
 var aliveSMin, aliveSMax, alivePMin, alivePMax, aliveRule;
 var bornSMin, bornSMax, bornPMin, bornPMax, bornRule;
 var lspeed, lgridsz;
@@ -41,6 +41,7 @@ window.onload = function () {
     restart = document.getElementById("restart");
     speed = document.getElementById("speed");
     gridsz = document.getElementById("gridsz");
+    addrnd = document.getElementById("addrnd");
     aliveSMin = document.getElementById("aliveSMin");
     aliveSMax = document.getElementById("aliveSMax");
     alivePMin = document.getElementById("alivePMin");
@@ -85,6 +86,9 @@ function addEvents() {
     speed.onchange = function () {
         updateRate = speed.value;
         lspeed.innerHTML = speed.value;
+    };
+    addrnd.onclick = function () {
+        addRand();
     };
     pause.onclick = function () {
         if (updateRate == 0) {
@@ -167,6 +171,17 @@ function addEvents() {
         }
         lbornPMin.innerHTML = bornPMin.value;
     };
+}
+
+function addRand() {
+    let numb = rows * cols * densit;
+    let powerkeys = Object.keys(powers);
+    for (let i = 0; i < numb; i++) {
+        let randChoice = Math.floor(Math.random() * powerkeys.length);
+        let r = Math.floor(Math.random() * rows);
+        let c = Math.floor(Math.random() * cols);
+        elem[r][c] = powerkeys[randChoice];
+    }
 }
 
 function animate(ts) {
