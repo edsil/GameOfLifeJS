@@ -9,15 +9,15 @@
     <title>Game of Life x 11</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
+<header class="sticky">
+    <button id="pause">Pause</button>
+    <button id="restart">Restart</button>
+    <button id="addrnd">+Random</button>
+    <button id="gliders">+Gliders</button>
+    <button id="lwss">+Light Spaceship</button>
+</header>
 <section>
     <config id="config">
-        <p>
-            <button id="pause">Pause</button>
-            <button id="restart">Restart</button>
-            <button id="addrnd">Add Random</button>
-        </p>
-        
         Speed: <label id="lspeed">26</label><br>
         <input type="range" id="speed" min="1" max="60" step="5" value="26"><br>
         Grid Size: <label id="lgridsz">8</label><br>

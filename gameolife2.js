@@ -29,12 +29,13 @@ var bornSMin, bornSMax, bornPMin, bornPMax, bornRule;
 var lspeed, lgridsz;
 var laliveSMin, laliveSMax, lalivePMin, lalivePMax, laliveRule;
 var lbornSMin, lbornSMax, lbornPMin, lbornPMax, lbornRule;
+var addgliders, addlwss;
 
 window.onload = function () {
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
     config = document.getElementById("config");
-    lpad = 200; //config.clientWidth;
+    lpad = 150; //config.clientWidth;
     ctx.canvas.width = window.innerWidth - lpad;
     ctx.canvas.height = window.innerHeight - 20;
     pause = document.getElementById("pause");
@@ -60,6 +61,9 @@ window.onload = function () {
     lbornSMax = document.getElementById("lbornSMax");
     lbornPMin = document.getElementById("lbornPMin");
     lbornPMax = document.getElementById("lbornPMax");
+    addgliders = document.getElementById("gliders");
+    addlwss = document.getElementById("lwss");
+
     init();
     addEvents();
     animate();
@@ -89,6 +93,9 @@ function addEvents() {
     };
     addrnd.onclick = function () {
         addRand();
+    };
+    addgliders.onclick = function () {
+        addGliders();
     };
     pause.onclick = function () {
         if (updateRate == 0) {
@@ -181,6 +188,21 @@ function addRand() {
         let r = Math.floor(Math.random() * rows);
         let c = Math.floor(Math.random() * cols);
         elem[r][c] = powerkeys[randChoice];
+    }
+}
+
+function addGliders() {
+    let numb = 1;
+    let powerkeys = Object.keys(powers);
+    for (let i = 0; i < numb; i++) {
+        let randChoice = Math.floor(Math.random() * powerkeys.length);
+        let r = Math.floor(Math.random() * (rows - 10)) + 5;
+        let c = Math.floor(Math.random() * (cols - 10)) + 5;
+        elem[r][c + 1] = powerkeys[randChoice];
+        elem[r + 1][c + 2] = powerkeys[randChoice];
+        elem[r + 2][c] = powerkeys[randChoice];
+        elem[r + 2][c + 1] = powerkeys[randChoice];
+        elem[r + 2][c + 2] = powerkeys[randChoice];
     }
 }
 
@@ -401,11 +423,6 @@ function judge(cell, powers, rules) {
         }
         maxSame = Math.max(maxSame, bugs[winners[i]]["c"]);
     }
-    //console.log("****");
-    //console.log(winners);
-    //winners.forEach(w => {console.log(bugs[w])})
-    // var randChoice = Math.floor(Math.random() * winners.length);
-    // var fwinner = winners[randChoice];
     return -1;
 }
 
